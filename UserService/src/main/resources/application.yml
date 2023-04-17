@@ -2,13 +2,23 @@ server:
     port: 8081
 
 spring:
+    application:
+        name: USER SERVICE
     datasource:
-        url: jdbc:mysql://localhost:3306/userservice
-        username: root
-        password: viking@iv1
-        driver-class-name: com.mysql.cj.jdbc.Driver
+        url: jdbc:postgresql://localhost:5432/microservices-userservice
+        username: postgres
+        password: password
+        driver-class-name: org.postgresql.Driver
 
     jpa:
         hibernate:
             ddl-auto: update
-        show-sql: true
+
+eureka:
+    instance:
+        prefer-ip-address: true
+    client:
+        fetch-registry: true
+        register-with-eureka: true
+        service-url:
+            defaultZone: http://localhost:8084/eureka

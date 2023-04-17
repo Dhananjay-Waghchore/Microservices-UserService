@@ -11,11 +11,13 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="HotelService" target="17" />
       <module name="UserService" target="17" />
     </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="HotelService" options="-parameters" />
       <module name="UserService" options="-parameters" />
     </option>
   </component>

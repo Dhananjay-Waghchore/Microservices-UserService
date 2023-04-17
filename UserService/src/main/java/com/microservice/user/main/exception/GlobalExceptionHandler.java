@@ -1,8 +1,6 @@
 package com.microservice.user.main.exception;
 
 import com.microservice.user.main.payload.ApiResponse;
-import org.apache.coyote.Response;
-import org.aspectj.bridge.IMessage;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
