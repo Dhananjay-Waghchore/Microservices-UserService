@@ -5,6 +5,7 @@ import com.microservice.user.main.entity.Hotel;
 import com.microservice.user.main.entity.Rating;
 import com.microservice.user.main.entity.User;
 import com.microservice.user.main.exception.ResourceNotFoundException;
+import com.microservice.user.main.external.service.HotelService;
 import com.microservice.user.main.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,6 +26,9 @@ public class ServiceImpl implements UserService {
     @Autowired
     private RestTemplate restTemplate;
 
+    @Autowired
+    private HotelService hotelService;
+
     @Override
     public User createUser(User user) {
         String randomUserId = UUID.randomUUID().toString();
@@ -44,7 +48,8 @@ public class ServiceImpl implements UserService {
 
         //Fetch hotel information for above rating
         listRating.stream().map(rating -> {
-            Hotel hotels = restTemplate.getForObject("http://HotelService/hotel/"+rating.getHotelId(), Hotel.class);
+            //Hotel hotels = restTemplate.getForObject("http://HotelService/hotel/"+rating.getHotelId(), Hotel.class);
+            Hotel hotels = hotelService.getHotel(rating.getHotelId());
             rating.setHotel(hotels);
             return rating;
         }).collect(Collectors.toList());
