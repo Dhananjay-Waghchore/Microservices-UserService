@@ -25,3 +25,33 @@ spring:
 #        register-with-eureka: true
 #        service-url:
 #            defaultZone: http://localhost:8084/eureka
+
+
+# Actuator health mangement
+management:
+    health:
+        circuit-breakers:
+            enabled: true
+    endpoints:
+        web:
+            exposure:
+                include: health
+    endpoint:
+        health:
+            show-details: always
+
+
+# Circuit breaker implementation with resiliency4j
+resilience4j:
+    circuitbreaker:
+        instances:
+            ratingHotelBreaker:
+                registerHealthIndicator: true
+                eventConsumerBufferSize: 10
+                failureRateThreshold: 50
+                minimumNumberOfCalls: 5
+                automaticTransitionFromOpenToHalfOpenEnabled: true
+                waitDurationInOpenState: 6
+                permittedNumberOfCallsInHalfOpenState: 3
+                slidingWindowSize: 10
+                slidingWindowType: COUNT_BASED

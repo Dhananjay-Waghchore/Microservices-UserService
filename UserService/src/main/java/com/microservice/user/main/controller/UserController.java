@@ -1,8 +1,11 @@
 package com.microservice.user.main.controller;
 
 import com.microservice.user.main.entity.User;
-import com.microservice.user.main.payload.ApiResponse;
 import com.microservice.user.main.service.UserService;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,8 +15,10 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/user")
+@Slf4j
 public class UserController {
 
+    Logger logger = LoggerFactory.getLogger(UserController.class);
     @Autowired
     private UserService userService;
 
@@ -24,9 +29,22 @@ public class UserController {
     }
 
     @GetMapping("/{userId}")
+    @CircuitBreaker(name = "ratingHotelBreaker", fallbackMethod = "ratingHotelFallback")
     public ResponseEntity<User> getUserById(@PathVariable String userId){
         User userById = this.userService.getUserById(userId);
         return new  ResponseEntity<User>(userById, HttpStatus.FOUND);
+    }
+
+    // Creating fallback method for circuit breaker
+    public ResponseEntity<User> ratingHotelFallback(String userId, Exception ex){
+        logger.info("fallback method is executed service is down", ex.getMessage());
+        User user = User.builder()
+                        .userName("dummy")
+                        .password("password")
+                        .email("dummy@gmail.com")
+                        .userId("12345")
+                        .build();
+        return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
     @GetMapping("/")
