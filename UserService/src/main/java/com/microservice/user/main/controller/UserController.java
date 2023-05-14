@@ -3,6 +3,7 @@ package com.microservice.user.main.controller;
 import com.microservice.user.main.entity.User;
 import com.microservice.user.main.service.UserService;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import io.github.resilience4j.retry.annotation.Retry;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,9 +29,12 @@ public class UserController {
         return new ResponseEntity<User>(createdUser, HttpStatus.CREATED);
     }
 
+    int retryCount = 1;
     @GetMapping("/{userId}")
-    @CircuitBreaker(name = "ratingHotelBreaker", fallbackMethod = "ratingHotelFallback")
+    //@CircuitBreaker(name = "ratingHotelBreaker", fallbackMethod = "ratingHotelFallback")
+    @Retry(name = "ratingHotelService", fallbackMethod = "ratingHotelFallback")
     public ResponseEntity<User> getUserById(@PathVariable String userId){
+        logger.info("retryCount : {} ",retryCount);
         User userById = this.userService.getUserById(userId);
         return new  ResponseEntity<User>(userById, HttpStatus.FOUND);
     }
