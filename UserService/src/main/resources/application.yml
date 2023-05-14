@@ -58,6 +58,13 @@ resilience4j:
 
     retry:
         instances:
-            ratingHotelBreaker:
+            ratingHotelService:
                 maxAttempts: 3
                 waitDuration: 3
+
+    ratelimiter:
+        instances:
+            userRateLimiter:
+                limitRefreshPeriod: 2
+                limitForPeriod: 2
+                timeoutDuration:
